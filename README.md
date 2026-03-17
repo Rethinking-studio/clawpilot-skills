@@ -39,5 +39,7 @@ clawpilot send "/Users/you/Desktop/report.png"
 ## Notes
 
 - Always use an absolute path.
+- Only send files smaller than 20 MB.
+- If a file is larger than 20 MB, tell the user it is too large instead of calling `clawpilot send`.
 - Do not expose internal routing details like `sessionKey` or `runId`.
 - Send files one by one unless your relay workflow explicitly supports batching.

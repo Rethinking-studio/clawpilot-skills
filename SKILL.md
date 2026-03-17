@@ -34,6 +34,8 @@ clawpilot send "/absolute/path/to/file"
 Rules:
 
 - Always use an absolute path.
+- Only send files smaller than 20 MB.
+- If the file is larger than 20 MB, do not call `clawpilot send`; tell the user the file is too large to send through PocketClaw.
 - Let `clawpilot` handle upload, session routing, and assistant-message delivery internally.
 - Keep the reply short after sending.
 - Do not tell the user to look up a local file path if upload is available.
@@ -81,3 +83,4 @@ Incorrect:
 - Sending a normal text reply instead of a structured attachment when the request is clearly to send the file back
 - Using `clawpilot upload` when the session is Telegram or Discord
 - Guessing that a session is relay without seeing `PocketClaw` or the legacy `ClawAI Relay`
+- Trying to send a file larger than 20 MB instead of telling the user it is too large
