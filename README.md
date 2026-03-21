@@ -1,45 +1,28 @@
-# ClawPilot Send File Skill
+# ClawPilot Skills
 
-A small skill for relay conversations that need to send a local file back to PocketClaw.
+This repository contains a small ClawPilot skill suite for PocketClaw and OpenClaw host operations.
 
-## What It Does
+## Included Skills
 
-When the current OpenClaw conversation is clearly the PocketClaw relay chat, this skill tells the model to use:
+- `clawpilot-pair`
+  Install or upgrade ClawPilot, verify OpenClaw gateway auth, and generate a PocketClaw pairing code.
 
-```bash
-clawpilot send "/absolute/path/to/file"
-```
+- `clawpilot-send`
+  Send a local or generated file back to PocketClaw with:
 
-The command handles:
+  ```bash
+  clawpilot send "/absolute/path/to/file"
+  ```
 
-- uploading the file to OSS
-- resolving the latest relay conversation session
-- sending the file back as an assistant attachment message
+- `clawpilot-doctor`
+  Diagnose or repair ClawPilot / OpenClaw host issues such as status, logs, restart, update, and self-repair.
 
-## When To Use
+- `clawpilot-config`
+  Inspect or minimally fix configuration required for pairing and auth.
 
-Use this skill only when all of the following are true:
+## Layout
 
-- the current conversation is clearly PocketClaw
-- the user wants a local or generated file sent back to mobile
-- the file already exists, or can be created locally first
-
-Do not use it for normal outbound channels like Telegram, Discord, Slack, WhatsApp, or email.
-
-## Files
-
-- `SKILL.md`: the skill instructions
-
-## Example
-
-```bash
-clawpilot send "/Users/you/Desktop/report.png"
-```
-
-## Notes
-
-- Always use an absolute path.
-- Only send files smaller than 20 MB.
-- If a file is larger than 20 MB, tell the user it is too large instead of calling `clawpilot send`.
-- Do not expose internal routing details like `sessionKey` or `runId`.
-- Send files one by one unless your relay workflow explicitly supports batching.
+- `clawpilot-pair/SKILL.md`
+- `clawpilot-send/SKILL.md`
+- `clawpilot-doctor/SKILL.md`
+- `clawpilot-config/SKILL.md`
