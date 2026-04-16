@@ -1,6 +1,6 @@
 ---
 name: clawpilot-send
-description: Use when the current OpenClaw conversation is PocketClaw or the legacy ClawAI Relay and the user wants a local or generated file sent back to mobile. Use a single high-level ClawPilot send command and do not expose session routing details.
+description: Use when the current PocketClaw conversation needs a local or generated file sent back to mobile, regardless of whether the host runtime is OpenClaw or Hermes. Use a single high-level ClawPilot send command and do not expose session routing details.
 ---
 
 # ClawPilot Send
@@ -22,10 +22,16 @@ Do not use this skill for Telegram, Discord, Slack, WhatsApp, email, or other no
 ## Required Action
 
 1. Resolve the absolute local file path.
-2. Run:
+2. If only one runtime is paired on the host, run:
 
 ```bash
 clawpilot send "/absolute/path/to/file"
+```
+
+3. If both OpenClaw and Hermes are paired on the same host, run:
+
+```bash
+clawpilot send --runtime <openclaw|hermes> "/absolute/path/to/file"
 ```
 
 ## Rules
@@ -36,6 +42,7 @@ clawpilot send "/absolute/path/to/file"
 - Let `clawpilot` handle upload, routing, and assistant-message delivery internally.
 - Do not mention `sessionKey`, `runId`, relay routes, or low-level payloads.
 - Do not invent `clawpilot send` flags or options.
+- Use `--runtime` only when multiple runtimes are paired and the target runtime is known.
 - If multiple files should be sent, send them one by one unless the current workflow clearly supports bundling.
 
 ## Fallback
