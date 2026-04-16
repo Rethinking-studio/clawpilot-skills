@@ -1,6 +1,6 @@
 ---
 name: clawpilot-pair
-description: Use when the user wants to pair PocketClaw, install or upgrade ClawPilot, verify OpenClaw gateway auth, and generate a pairing code. Follow a strict pairing workflow and output the final 8-digit pairing code on its own line when successful.
+description: Use when the user wants to pair PocketClaw, install or upgrade ClawPilot, verify host runtime readiness, and generate a pairing code for OpenClaw or Hermes. Follow a strict pairing workflow and output the final pairing code on its own line when successful.
 ---
 
 # ClawPilot Pair
@@ -25,36 +25,60 @@ Follow this order exactly. Do not skip checks.
 1. Install or upgrade ClawPilot:
 
 ```bash
-npm install -g @rethinkingstudio/clawpilot
+npm install -g @rethinkingstudio/clawpilot@latest
 ```
 
-2. Verify OpenClaw config can be found.
-- Check common config paths before concluding it is missing.
-- If config is missing, report which paths were checked and what file is expected.
+2. Determine the target runtime.
+- Use `openclaw` or `hermes`.
+- If the user does not specify and the host only has one runtime, use that runtime.
+- If both runtimes are available and the user did not specify, ask which runtime to pair.
 
-3. Verify Gateway auth is usable.
-- Check whether config already contains a usable `token` or `password`.
-- If config uses environment variable references such as `${OPENCLAW_GATEWAY_TOKEN}`, verify the environment variable is actually present.
-- If auth is missing, say exactly what is missing and the most direct fix.
+3. Run runtime-specific readiness checks before pairing.
 
-4. Verify the local Gateway is reachable.
-- If the service is down or auth still fails, stop and report the blocking step with the next command to run.
+For `openclaw`:
+- Verify OpenClaw config can be found.
+- Verify gateway auth is usable.
+- Verify the local gateway is reachable.
+- If auth or gateway reachability fails, stop and report the blocking step with the next command or config fix.
 
-5. Only after all checks pass, generate the pairing code:
+For `hermes`:
+- Verify the `hermes` CLI exists.
+- Verify `hermes gateway status` works.
+- If the gateway service is not installed, tell the user to run:
 
 ```bash
-clawpilot pair
+hermes gateway install
+hermes gateway start
 ```
+
+- If Hermes API readiness fails, report the exact blocking step and the next command to run.
+
+4. Only after readiness checks pass, generate the pairing code:
+
+```bash
+clawpilot pair --runtime openclaw
+```
+
+or
+
+```bash
+clawpilot pair --runtime hermes
+```
+
+Notes:
+- `clawpilot pair --runtime hermes` will prepare the local Hermes API automatically if possible.
+- Use `--code-only` only when the user explicitly wants the code without QR output.
 
 ## Output Rules
 
-- If successful, put the final 8-digit pairing code on its own line.
+- If successful, put the final pairing code on its own line.
 - Keep explanations brief and action-oriented.
 - If blocked, say what failed, what was checked, and the next command or config change needed.
 
 ## Do Not
 
 - Do not invent ClawPilot flags or unsupported commands.
-- Do not skip auth validation and jump straight to pairing.
+- Do not skip runtime readiness checks and jump straight to pairing.
 - Do not return a vague failure such as "configuration error" without naming the missing item.
-- Do not modify unrelated OpenClaw settings.
+- Do not force OpenClaw-specific checks when the user is pairing Hermes.
+- Do not modify unrelated host settings.
