@@ -22,13 +22,18 @@ Do not use this skill for Telegram, Discord, Slack, WhatsApp, email, or other no
 ## Required Action
 
 1. Resolve the absolute local file path.
-2. If only one runtime is paired on the host, run:
+2. Determine the target runtime from the current PocketClaw conversation whenever possible.
+- If the current PocketClaw session is clearly `OpenClaw`, use `--runtime openclaw`.
+- If the current PocketClaw session is clearly `Hermes`, use `--runtime hermes`.
+- Only ask the user which runtime to use if both runtimes are paired **and** the current conversation does not clearly identify the runtime.
+
+3. If only one runtime is paired on the host, run:
 
 ```bash
 clawpilot send "/absolute/path/to/file"
 ```
 
-3. If both OpenClaw and Hermes are paired on the same host, run:
+4. If both OpenClaw and Hermes are paired on the same host, run:
 
 ```bash
 clawpilot send --runtime <openclaw|hermes> "/absolute/path/to/file"
@@ -42,7 +47,7 @@ clawpilot send --runtime <openclaw|hermes> "/absolute/path/to/file"
 - Let `clawpilot` handle upload, routing, and assistant-message delivery internally.
 - Do not mention `sessionKey`, `runId`, relay routes, or low-level payloads.
 - Do not invent `clawpilot send` flags or options.
-- Use `--runtime` only when multiple runtimes are paired and the target runtime is known.
+- When the current PocketClaw conversation clearly identifies the runtime, always use the matching `--runtime` if multiple runtimes are paired.
 - If multiple files should be sent, send them one by one unless the current workflow clearly supports bundling.
 
 ## Fallback
