@@ -1,11 +1,11 @@
 # ClawPilot Skills
 
-This repository contains a small ClawPilot skill suite for PocketClaw and OpenClaw host operations.
+This repository contains a small ClawPilot skill suite for PocketClaw host operations across OpenClaw, Hermes, and cc-connect Coding Agent runtimes.
 
 ## Included Skills
 
 - `clawpilot-pair`
-  Install or upgrade ClawPilot, verify OpenClaw gateway auth, and generate a PocketClaw pairing code.
+  Install or upgrade ClawPilot, verify runtime readiness, and generate a PocketClaw pairing code for OpenClaw, Hermes, or cc-connect.
 
 - `clawpilot-send`
   Send a local or generated file back to PocketClaw with:
@@ -15,10 +15,10 @@ This repository contains a small ClawPilot skill suite for PocketClaw and OpenCl
   ```
 
 - `clawpilot-doctor`
-  Diagnose or repair ClawPilot / OpenClaw host issues such as status, logs, restart, update, and self-repair.
+  Diagnose or repair ClawPilot host issues such as status, logs, restart, update, OpenClaw gateway health, Hermes API health, and cc-connect bridge readiness.
 
 - `clawpilot-config`
-  Inspect or minimally fix configuration required for pairing and auth.
+  Inspect or minimally fix configuration required for pairing and auth across OpenClaw, Hermes, and cc-connect.
 
 ## Layout
 
