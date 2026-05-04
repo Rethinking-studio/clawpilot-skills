@@ -71,9 +71,18 @@ npm install -g cc-connect
 cc-connect --help
 ```
 
-- Do not pair as `ccconnect` until the command is installed and runnable.
-- Let `clawpilot pair --runtime ccconnect` prepare the local management API and bridge configuration.
-- If cc-connect cannot be installed or started, stop and report that as the blocking step.
+- Configure cc-connect using the official AI-agent-friendly guide:
+
+```text
+Follow https://raw.githubusercontent.com/chenhg5/cc-connect/refs/heads/main/INSTALL.md to install and configure cc-connect.
+```
+
+- The official guide normally configures `~/.cc-connect/config.toml` and may use `cc-connect web`; it does not automatically install the cc-connect daemon.
+- Make sure at least one project is configured with the intended coding agent and `work_dir`.
+- Do not install `cc-connect daemon` by default. ClawPilot manages the background relay process and will start cc-connect with the configured `~/.cc-connect/config.toml` when needed. Only install the cc-connect daemon if the user explicitly asks for a standalone cc-connect service.
+- Do not pair as `ccconnect` until `cc-connect` is installed, runnable, and configured.
+- Let `clawpilot pair --runtime ccconnect` prepare or validate the local cc-connect Management API and Bridge settings needed by PocketClaw.
+- If cc-connect cannot be installed, configured, or started, stop and report that as the blocking step.
 
 4. Only after readiness checks pass, generate the pairing code:
 
@@ -95,7 +104,7 @@ clawpilot pair --runtime ccconnect
 
 Notes:
 - `clawpilot pair --runtime hermes` will prepare the local Hermes API automatically if possible.
-- `clawpilot pair --runtime ccconnect` expects `cc-connect` to be installed first, then prepares the local cc-connect management API and bridge configuration.
+- `clawpilot pair --runtime ccconnect` expects `cc-connect` to be installed and configured first, then prepares or validates the local cc-connect Management API and Bridge configuration.
 - Use `--code-only` only when the user explicitly wants the code without QR output.
 
 ## Output Rules

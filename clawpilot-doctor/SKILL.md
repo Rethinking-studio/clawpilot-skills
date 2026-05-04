@@ -65,8 +65,13 @@ cc-connect --help
 clawpilot status
 ```
 
-Then inspect the current ClawPilot runtime config for cc-connect:
+Then inspect both the cc-connect app config and the current ClawPilot runtime config:
 
+- `~/.cc-connect/config.toml`
+  - configured `[[projects]]`
+  - `[projects.agent]` type and `work_dir`
+  - `[management]` enabled/port/token
+  - `[bridge]` enabled/port/token
 - `~/.clawai/runtimes/ccconnect.json`
 - management API URL/token
 - bridge URL/token
@@ -76,6 +81,14 @@ If `cc-connect` is missing, install it before retrying pairing:
 ```bash
 npm install -g cc-connect
 ```
+
+If cc-connect is installed but not configured, use the official AI-agent guide before pairing:
+
+```text
+Follow https://raw.githubusercontent.com/chenhg5/cc-connect/refs/heads/main/INSTALL.md to install and configure cc-connect.
+```
+
+Do not treat a missing cc-connect daemon as a failure by itself. The official guide makes daemon mode optional, and ClawPilot normally starts cc-connect as part of its own background service for PocketClaw. Only diagnose `cc-connect daemon status` when the user explicitly chose a standalone cc-connect daemon.
 
 ## Output Rules
 

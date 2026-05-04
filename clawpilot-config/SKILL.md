@@ -23,6 +23,7 @@ Use this skill when the user needs to:
 - Validate Hermes API server settings in `~/.hermes/.env`
 - Check `API_SERVER_ENABLED` / `API_SERVER_KEY`
 - Validate cc-connect runtime settings in `~/.clawai/runtimes/ccconnect.json`
+- Validate the cc-connect app config in `~/.cc-connect/config.toml`
 - Check whether `cc-connect` is installed and runnable
 
 Do not use this skill for file delivery or general diagnostics when configuration is not the actual issue.
@@ -50,12 +51,22 @@ For `hermes`:
 - local API base URL assumptions
 
 For `ccconnect`:
+- `~/.cc-connect/config.toml`
+  - at least one `[[projects]]` entry
+  - correct `[projects.agent]` type and `work_dir`
+  - `[management] enabled = true`, port/token
+  - `[bridge] enabled = true`, port/token
 - `~/.clawai/runtimes/ccconnect.json`
 - `ccconnectManagementUrl`
 - `ccconnectManagementToken`
 - `ccconnectBridgeUrl`
 - `ccconnectBridgeToken`
 - `cc-connect` command availability
+
+Important cc-connect notes:
+- The official cc-connect AI install guide configures cc-connect but does not install the cc-connect daemon automatically.
+- ClawPilot normally manages the background relay lifecycle for PocketClaw. Do not recommend `cc-connect daemon install` unless the user explicitly wants cc-connect to run independently of ClawPilot.
+- If `~/.cc-connect/config.toml` exists but Management API or Bridge settings are missing, identify those exact missing sections instead of replacing the user's project/platform config.
 
 ## Output Rules
 
