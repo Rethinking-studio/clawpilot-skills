@@ -62,6 +62,7 @@ For ccconnect-specific failures, prefer checking:
 ```bash
 command -v cc-connect
 cc-connect --help
+cc-connect daemon status
 clawpilot status
 ```
 
@@ -70,16 +71,19 @@ Then inspect both the cc-connect app config and the current ClawPilot runtime co
 - `~/.cc-connect/config.toml`
   - configured `[[projects]]`
   - `[projects.agent]` type and `work_dir`
+  - `[projects.agent.options] work_dir` exists and is writable
+  - `work_dir` is not `/`
   - `[management]` enabled/port/token
   - `[bridge]` enabled/port/token
 - `~/.clawai/runtimes/ccconnect.json`
 - management API URL/token
 - bridge URL/token
+- selected coding agent command availability, such as `claude`, `codex`, or `gemini`
 
 If `cc-connect` is missing, install it before retrying pairing:
 
 ```bash
-npm install -g cc-connect
+npm install -g cc-connect@latest
 ```
 
 If cc-connect is installed but not configured, use the official AI-agent guide before pairing:
@@ -88,7 +92,28 @@ If cc-connect is installed but not configured, use the official AI-agent guide b
 Follow https://raw.githubusercontent.com/chenhg5/cc-connect/refs/heads/main/INSTALL.md to install and configure cc-connect.
 ```
 
-Do not treat a missing cc-connect daemon as a failure by itself. The official guide makes daemon mode optional, and ClawPilot normally starts cc-connect as part of its own background service for PocketClaw. Only diagnose `cc-connect daemon status` when the user explicitly chose a standalone cc-connect daemon.
+For PocketClaw ccconnect pairing, treat the cc-connect daemon as the stable runtime path. The official guide configures cc-connect but does not install the daemon automatically. Do not recommend `cc-connect &`, shell background jobs, or `terminal(background=true)` as a stable fix.
+
+After installing/upgrading cc-connect or changing `~/.cc-connect/config.toml`, clear the old service and reinstall it with the explicit config path:
+
+```bash
+cc-connect daemon stop || true
+cc-connect daemon uninstall || true
+cc-connect daemon install --config ~/.cc-connect/config.toml
+cc-connect daemon status
+```
+
+If the daemon fails, inspect logs before guessing:
+
+```bash
+cc-connect daemon logs -f
+```
+
+If the Bridge is expected on the default port, verify it is listening:
+
+```bash
+lsof -i :9810
+```
 
 ## Output Rules
 

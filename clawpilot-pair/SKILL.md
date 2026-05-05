@@ -62,7 +62,7 @@ For `ccconnect`:
 - Install or upgrade cc-connect before pairing:
 
 ```bash
-npm install -g cc-connect
+npm install -g cc-connect@latest
 ```
 
 - Verify the `cc-connect` command is available:
@@ -79,10 +79,43 @@ Follow https://raw.githubusercontent.com/chenhg5/cc-connect/refs/heads/main/INST
 
 - The official guide normally configures `~/.cc-connect/config.toml` and may use `cc-connect web`; it does not automatically install the cc-connect daemon.
 - Make sure at least one project is configured with the intended coding agent and `work_dir`.
-- Do not install `cc-connect daemon` by default. ClawPilot manages the background relay process and will start cc-connect with the configured `~/.cc-connect/config.toml` when needed. Only install the cc-connect daemon if the user explicitly asks for a standalone cc-connect service.
-- Do not pair as `ccconnect` until `cc-connect` is installed, runnable, and configured.
-- Let `clawpilot pair --runtime ccconnect` prepare or validate the local cc-connect Management API and Bridge settings needed by PocketClaw.
-- If cc-connect cannot be installed, configured, or started, stop and report that as the blocking step.
+- Verify the selected coding agent is installed and runnable before pairing. For example:
+  - Claude Code: `claude --version`, then a minimal `claude -p "test"` if safe for the user's environment.
+  - Codex: `codex --version`.
+  - Gemini: `gemini --version`.
+  - If the agent type is unclear, ask the user which coding agent they want cc-connect to launch. Only default to `claudecode` when the user has not chosen another agent.
+- Validate `~/.cc-connect/config.toml` before installing the daemon:
+  - `[[projects]]` exists.
+  - `[projects.agent] type` matches the coding agent the user actually has.
+  - `[projects.agent.options] work_dir` exists and is writable.
+  - Do not leave `work_dir = "/"`; prefer the user's chosen workspace, `$HOME/Desktop`, or another writable user directory.
+  - `[management] enabled = true` with a port and token.
+  - `[bridge] enabled = true` with a port and token.
+- Install cc-connect as a daemon for stable PocketClaw pairing. Do not start it with `cc-connect &`, shell background jobs, or `terminal(background=true)`, because those processes can die when the parent shell session ends.
+- After installing or upgrading cc-connect, or after changing `~/.cc-connect/config.toml`, clear any old daemon and reinstall it with the explicit config path:
+
+```bash
+cc-connect daemon stop || true
+cc-connect daemon uninstall || true
+cc-connect daemon install --config ~/.cc-connect/config.toml
+cc-connect daemon status
+```
+
+- Verify the daemon exposes the Bridge port before pairing:
+
+```bash
+lsof -i :9810
+```
+
+- If cc-connect crashes or status is unclear, inspect daemon logs instead of guessing:
+
+```bash
+cc-connect daemon logs -f
+```
+
+- Do not pair as `ccconnect` until `cc-connect` is installed, runnable, configured, daemonized, and the Management API and Bridge settings are present.
+- Let `clawpilot pair --runtime ccconnect` validate the local cc-connect Management API and Bridge settings needed by PocketClaw.
+- If cc-connect cannot be installed, configured, daemonized, or started, stop and report that as the blocking step.
 
 4. Only after readiness checks pass, generate the pairing code:
 
@@ -104,7 +137,7 @@ clawpilot pair --runtime ccconnect
 
 Notes:
 - `clawpilot pair --runtime hermes` will prepare the local Hermes API automatically if possible.
-- `clawpilot pair --runtime ccconnect` expects `cc-connect` to be installed and configured first, then prepares or validates the local cc-connect Management API and Bridge configuration.
+- `clawpilot pair --runtime ccconnect` expects `cc-connect` to be installed, configured, and running through its daemon first, then validates the local cc-connect Management API and Bridge configuration.
 - Use `--code-only` only when the user explicitly wants the code without QR output.
 
 ## Output Rules

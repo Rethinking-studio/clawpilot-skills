@@ -25,6 +25,7 @@ Use this skill when the user needs to:
 - Validate cc-connect runtime settings in `~/.clawai/runtimes/ccconnect.json`
 - Validate the cc-connect app config in `~/.cc-connect/config.toml`
 - Check whether `cc-connect` is installed and runnable
+- Validate cc-connect daemon readiness when pairing or host-side ccconnect operations depend on it
 
 Do not use this skill for file delivery or general diagnostics when configuration is not the actual issue.
 
@@ -54,6 +55,8 @@ For `ccconnect`:
 - `~/.cc-connect/config.toml`
   - at least one `[[projects]]` entry
   - correct `[projects.agent]` type and `work_dir`
+  - `[projects.agent.options] work_dir` must exist and be writable
+  - do not leave `work_dir = "/"`; prefer the user's selected workspace, `$HOME/Desktop`, or another writable user directory
   - `[management] enabled = true`, port/token
   - `[bridge] enabled = true`, port/token
 - `~/.clawai/runtimes/ccconnect.json`
@@ -62,10 +65,27 @@ For `ccconnect`:
 - `ccconnectBridgeUrl`
 - `ccconnectBridgeToken`
 - `cc-connect` command availability
+- selected coding agent command availability, such as `claude`, `codex`, or `gemini`
+- cc-connect daemon status when pairing or PocketClaw access depends on ccconnect staying alive
 
 Important cc-connect notes:
 - The official cc-connect AI install guide configures cc-connect but does not install the cc-connect daemon automatically.
-- ClawPilot normally manages the background relay lifecycle for PocketClaw. Do not recommend `cc-connect daemon install` unless the user explicitly wants cc-connect to run independently of ClawPilot.
+- For PocketClaw ccconnect pairing, prefer the official cc-connect daemon so the process survives the shell session. Avoid recommending `cc-connect &`, shell background jobs, or terminal background execution.
+- After installing/upgrading cc-connect or changing `~/.cc-connect/config.toml`, reinstall the daemon with the explicit config path:
+
+```bash
+cc-connect daemon stop || true
+cc-connect daemon uninstall || true
+cc-connect daemon install --config ~/.cc-connect/config.toml
+cc-connect daemon status
+```
+
+- If cc-connect is crashing, use daemon logs to find the real cause:
+
+```bash
+cc-connect daemon logs -f
+```
+
 - If `~/.cc-connect/config.toml` exists but Management API or Bridge settings are missing, identify those exact missing sections instead of replacing the user's project/platform config.
 
 ## Output Rules
