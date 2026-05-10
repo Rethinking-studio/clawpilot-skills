@@ -86,13 +86,15 @@ If `cc-connect` is missing, install it before retrying pairing:
 npm install -g cc-connect@latest
 ```
 
-If cc-connect is installed but not configured, use the official AI-agent guide before pairing:
+If cc-connect is installed but not configured for PocketClaw pairing, prepare the ClawPilot config and daemon before pairing:
 
-```text
-Follow https://raw.githubusercontent.com/chenhg5/cc-connect/refs/heads/main/INSTALL.md to install and configure cc-connect.
+```bash
+clawpilot prepare-ccconnect
+cc-connect daemon install --config ~/.cc-connect/config.toml
+cc-connect daemon restart
 ```
 
-For PocketClaw ccconnect pairing, treat the cc-connect daemon as the stable runtime path. The official guide configures cc-connect but does not install the daemon automatically. Do not recommend `cc-connect &`, shell background jobs, or `terminal(background=true)` as a stable fix.
+For PocketClaw ccconnect pairing, treat the cc-connect daemon as the stable runtime path. `clawpilot prepare-ccconnect` creates a PocketClaw placeholder channel; do not replace it with a dummy platform or ask the user to choose Feishu, Telegram, Discord, WeCom, or Weixin. Do not recommend `cc-connect &`, shell background jobs, or `terminal(background=true)` as a stable fix. ClawPilot must not start cc-connect itself.
 
 After installing/upgrading cc-connect or changing `~/.cc-connect/config.toml`, clear the old service and reinstall it with the explicit config path:
 
@@ -100,6 +102,7 @@ After installing/upgrading cc-connect or changing `~/.cc-connect/config.toml`, c
 cc-connect daemon stop || true
 cc-connect daemon uninstall || true
 cc-connect daemon install --config ~/.cc-connect/config.toml
+cc-connect daemon restart
 cc-connect daemon status
 ```
 

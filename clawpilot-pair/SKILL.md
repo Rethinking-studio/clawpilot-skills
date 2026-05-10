@@ -71,13 +71,14 @@ npm install -g cc-connect@latest
 cc-connect --help
 ```
 
-- Configure cc-connect using the official AI-agent-friendly guide:
+- Prepare cc-connect config for PocketClaw:
 
-```text
-Follow https://raw.githubusercontent.com/chenhg5/cc-connect/refs/heads/main/INSTALL.md to install and configure cc-connect.
+```bash
+clawpilot prepare-ccconnect
 ```
 
-- The official guide normally configures `~/.cc-connect/config.toml` and may use `cc-connect web`; it does not automatically install the cc-connect daemon.
+- `clawpilot prepare-ccconnect` writes `~/.cc-connect/config.toml` with a PocketClaw placeholder channel, Management API, and Bridge settings.
+- Do not replace the placeholder channel with a dummy platform, and do not ask the user to choose Feishu, Telegram, Discord, WeCom, or Weixin for PocketClaw pairing.
 - Make sure at least one project is configured with the intended coding agent and `work_dir`.
 - Verify the selected coding agent is installed and runnable before pairing. For example:
   - Claude Code: `claude --version`, then a minimal `claude -p "test"` if safe for the user's environment.
@@ -98,6 +99,7 @@ Follow https://raw.githubusercontent.com/chenhg5/cc-connect/refs/heads/main/INST
 cc-connect daemon stop || true
 cc-connect daemon uninstall || true
 cc-connect daemon install --config ~/.cc-connect/config.toml
+cc-connect daemon restart
 cc-connect daemon status
 ```
 
@@ -114,7 +116,7 @@ cc-connect daemon logs -f
 ```
 
 - Do not pair as `ccconnect` until `cc-connect` is installed, runnable, configured, daemonized, and the Management API and Bridge settings are present.
-- Let `clawpilot pair --runtime ccconnect` validate the local cc-connect Management API and Bridge settings needed by PocketClaw.
+- Let `clawpilot pair --runtime ccconnect` validate the local cc-connect Management API and Bridge settings needed by PocketClaw. It must not start cc-connect itself.
 - If cc-connect cannot be installed, configured, daemonized, or started, stop and report that as the blocking step.
 
 4. Only after readiness checks pass, generate the pairing code:
@@ -137,7 +139,7 @@ clawpilot pair --runtime ccconnect
 
 Notes:
 - `clawpilot pair --runtime hermes` will prepare the local Hermes API automatically if possible.
-- `clawpilot pair --runtime ccconnect` expects `cc-connect` to be installed, configured, and running through its daemon first, then validates the local cc-connect Management API and Bridge configuration.
+- `clawpilot pair --runtime ccconnect` expects `cc-connect` to be installed, configured by `clawpilot prepare-ccconnect` when needed, and running through its daemon first, then validates the local cc-connect Management API and Bridge configuration.
 - Use `--code-only` only when the user explicitly wants the code without QR output.
 
 ## Output Rules

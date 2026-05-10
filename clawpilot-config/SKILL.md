@@ -71,12 +71,16 @@ For `ccconnect`:
 Important cc-connect notes:
 - The official cc-connect AI install guide configures cc-connect but does not install the cc-connect daemon automatically.
 - For PocketClaw ccconnect pairing, prefer the official cc-connect daemon so the process survives the shell session. Avoid recommending `cc-connect &`, shell background jobs, or terminal background execution.
+- Prefer `clawpilot prepare-ccconnect` to create `~/.cc-connect/config.toml` with the PocketClaw placeholder channel, Management API, and Bridge settings before installing the daemon.
+- Do not replace the placeholder channel with a dummy platform or ask the user to choose Feishu, Telegram, Discord, WeCom, or Weixin for PocketClaw pairing.
+- ClawPilot must not start cc-connect itself; cc-connect should already be reachable through its daemon before `clawpilot pair --runtime ccconnect`.
 - After installing/upgrading cc-connect or changing `~/.cc-connect/config.toml`, reinstall the daemon with the explicit config path:
 
 ```bash
 cc-connect daemon stop || true
 cc-connect daemon uninstall || true
 cc-connect daemon install --config ~/.cc-connect/config.toml
+cc-connect daemon restart
 cc-connect daemon status
 ```
 
