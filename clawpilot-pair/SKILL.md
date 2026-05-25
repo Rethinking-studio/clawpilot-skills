@@ -42,13 +42,26 @@ npm install -g @rethinkingstudio/clawpilot@latest
 
 For `openclaw`:
 - Verify OpenClaw config can be found.
+- Resolve and record OpenClaw's local location before pairing:
+  - `which openclaw`
+  - `openclaw config file`
+  - read the local gateway port from the OpenClaw config, then derive `ws://127.0.0.1:<port>` or `ws://localhost:<port>`.
 - Verify gateway auth is usable.
 - Verify the local gateway is reachable.
+- ClawPilot should persist the resolved location in its runtime config during `clawpilot pair --runtime openclaw`. If you manually inspect or repair the config, preserve these fields when known:
+  - `openclawGatewayUrl`
+  - `openclawConfigPath`
+  - `openclawBinPath`
 - If auth or gateway reachability fails, stop and report the blocking step with the next command or config fix.
 
 For `hermes`:
 - Verify the `hermes` CLI exists.
 - Verify `hermes gateway status` works.
+- Resolve and record Hermes's local location before pairing:
+  - `which hermes`
+  - the active `HERMES_HOME` or `~/.hermes` / active profile directory
+  - the active `.env` path
+  - the local API URL, normally `http://127.0.0.1:8642`
 - If the gateway service is not installed, tell the user to run:
 
 ```bash
@@ -57,6 +70,12 @@ hermes gateway start
 ```
 
 - If Hermes API readiness fails, report the exact blocking step and the next command to run.
+- ClawPilot should persist the resolved location in its runtime config during `clawpilot pair --runtime hermes`. If you manually inspect or repair the config, preserve these fields when known:
+  - `hermesApiBaseUrl`
+  - `hermesApiKey`
+  - `hermesHome`
+  - `hermesEnvPath`
+  - `hermesBinPath`
 
 For `ccconnect`:
 - Install or upgrade cc-connect before pairing:

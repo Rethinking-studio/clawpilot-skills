@@ -1,6 +1,6 @@
 ---
 name: clawpilot-send
-description: Use when the current PocketClaw conversation needs a local or generated file sent back to mobile, regardless of whether the host runtime is OpenClaw or Hermes. Use a single high-level ClawPilot send command and do not expose session routing details.
+description: Use when the current PocketClaw conversation needs a local or generated file sent back to mobile, regardless of whether the host runtime is OpenClaw, Hermes, or cc-connect. Use a single high-level ClawPilot send command and do not expose session routing details.
 ---
 
 # ClawPilot Send
@@ -25,6 +25,7 @@ Do not use this skill for Telegram, Discord, Slack, WhatsApp, email, or other no
 2. Determine the target runtime from the current PocketClaw conversation whenever possible.
 - If the current PocketClaw session is clearly `OpenClaw`, use `--runtime openclaw`.
 - If the current PocketClaw session is clearly `Hermes`, use `--runtime hermes`.
+- If the current PocketClaw session is clearly `cc-connect`, `Coding`, or a Coding Agent host, use `--runtime ccconnect`.
 - Only ask the user which runtime to use if both runtimes are paired **and** the current conversation does not clearly identify the runtime.
 
 3. If only one runtime is paired on the host, run:
@@ -33,10 +34,10 @@ Do not use this skill for Telegram, Discord, Slack, WhatsApp, email, or other no
 clawpilot send "/absolute/path/to/file"
 ```
 
-4. If both OpenClaw and Hermes are paired on the same host, run:
+4. If multiple runtimes are paired on the same host, run:
 
 ```bash
-clawpilot send --runtime <openclaw|hermes> "/absolute/path/to/file"
+clawpilot send --runtime <openclaw|hermes|ccconnect> "/absolute/path/to/file"
 ```
 
 ## Rules
@@ -48,6 +49,7 @@ clawpilot send --runtime <openclaw|hermes> "/absolute/path/to/file"
 - Do not mention `sessionKey`, `runId`, relay routes, or low-level payloads.
 - Do not invent `clawpilot send` flags or options.
 - When the current PocketClaw conversation clearly identifies the runtime, always use the matching `--runtime` if multiple runtimes are paired.
+- Use the high-level send command even for image/video/file attachments; ClawPilot handles upload and URL-only relay delivery internally.
 - If multiple files should be sent, send them one by one unless the current workflow clearly supports bundling.
 
 ## Fallback

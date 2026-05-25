@@ -2,16 +2,23 @@
 
 This repository contains a small ClawPilot skill suite for PocketClaw host operations across OpenClaw, Hermes, and cc-connect Coding Agent runtimes.
 
+Use these skills with the latest stable ClawPilot:
+
+```bash
+npm install -g @rethinkingstudio/clawpilot@latest
+```
+
 ## Included Skills
 
 - `clawpilot-pair`
   Install or upgrade ClawPilot, verify runtime readiness, and generate a PocketClaw pairing code for OpenClaw, Hermes, or cc-connect.
 
 - `clawpilot-send`
-  Send a local or generated file back to PocketClaw with:
+  Send a local or generated file back to PocketClaw, optionally targeting a specific paired runtime:
 
   ```bash
   clawpilot send "/absolute/path/to/file"
+  clawpilot send --runtime ccconnect "/absolute/path/to/file"
   ```
 
 - `clawpilot-doctor`
