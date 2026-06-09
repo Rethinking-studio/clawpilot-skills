@@ -57,10 +57,15 @@ For `openclaw`:
 For `hermes`:
 - Verify the `hermes` CLI exists.
 - Verify `hermes gateway status` works.
+- Verify the Hermes Agent Bridge runtime before pairing. Three green connection indicators are not sufficient unless the Python bridge used for real chat turns is also available.
 - Resolve and record Hermes's local location before pairing:
   - `which hermes`
   - the active `HERMES_HOME` or `~/.hermes` / active profile directory
   - the active `.env` path
+  - the Hermes Agent Python path. Check configured Hermes paths first when present, then:
+    - `$(dirname $(which hermes))/python`
+    - `~/.local/hermes-agent/venv/bin/python`
+    - `~/.hermes/hermes-agent/venv/bin/python`
   - the local API URL, normally `http://127.0.0.1:8642`
 - If the gateway service is not installed, tell the user to run:
 
@@ -70,12 +75,18 @@ hermes gateway start
 ```
 
 - If Hermes API readiness fails, report the exact blocking step and the next command to run.
+- If Hermes Agent Bridge readiness fails with `Hermes agent Python not found`, do not edit ClawPilot source code. Repair the user's Hermes installation or configuration:
+  - If the configured Python path is wrong, fix the Hermes config or active profile config.
+  - If the Python file exists but is not executable, run `chmod +x <python-path>`.
+  - If the venv/runtime is missing or imports such as `hermes_cli`, `hermes_state`, or `run_agent` fail, reinstall or repair the Hermes agent runtime.
+  - After repair, restart ClawPilot and rerun `clawpilot status`.
 - ClawPilot should persist the resolved location in its runtime config during `clawpilot pair --runtime hermes`. If you manually inspect or repair the config, preserve these fields when known:
   - `hermesApiBaseUrl`
   - `hermesApiKey`
   - `hermesHome`
   - `hermesEnvPath`
   - `hermesBinPath`
+  - `hermesAgentPythonPath`
 
 For `ccconnect`:
 - Install or upgrade cc-connect before pairing:

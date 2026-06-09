@@ -41,6 +41,7 @@ When the host has multiple runtimes, evaluate them separately:
 - `Hermes`
   - relay
   - Hermes API
+  - Hermes Agent Bridge Python/runtime
 - `ccconnect`
   - relay
   - cc-connect Management API
@@ -56,6 +57,31 @@ and the current `~/.hermes/.env` values for:
 
 - `API_SERVER_ENABLED`
 - `API_SERVER_KEY`
+
+If Hermes API is healthy but sending a message fails with `Hermes agent Python not found` or `Hermes Agent Bridge unavailable`, treat it as a Hermes runtime/config problem, not a PocketClaw connection problem. Check:
+
+```bash
+which hermes
+ls -l "$(dirname "$(which hermes)")/python"
+ls -l "$HOME/.local/hermes-agent/venv/bin/python"
+ls -l "$HOME/.hermes/hermes-agent/venv/bin/python"
+```
+
+Also inspect the active Hermes config (`$HERMES_HOME/config.yaml`, the active profile config, or `~/.hermes/config.yaml`) for any configured agent/python/runtime path. Validate the chosen Python with:
+
+```bash
+test -x /path/to/python
+/path/to/python -c 'import hermes_cli, hermes_state, run_agent, yaml'
+```
+
+Repair based on the concrete failure:
+
+- Wrong configured path: fix the Hermes config or active profile config.
+- Existing but non-executable Python: `chmod +x /path/to/python`.
+- Missing venv/runtime or failed imports: reinstall or repair the Hermes agent runtime.
+- Stale `hermes` on PATH: fix PATH so `which hermes` points to the current Hermes install.
+
+After repair, restart ClawPilot and verify `clawpilot status` shows both Hermes API and Hermes Agent Bridge healthy before testing a chat message.
 
 For ccconnect-specific failures, prefer checking:
 
