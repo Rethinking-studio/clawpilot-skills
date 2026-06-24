@@ -62,8 +62,11 @@ If Hermes API is healthy but sending a message fails with `Hermes agent Python n
 
 ```bash
 which hermes
+node -e 'try { console.log(JSON.parse(require("fs").readFileSync(process.env.HOME + "/.clawai/runtimes/hermes.json", "utf8")).hermesAgentPythonPath || "") } catch {}'
 ls -l "$(dirname "$(which hermes)")/python"
+ls -l "$HOME/.local/hermes-agent/.venv/bin/python"
 ls -l "$HOME/.local/hermes-agent/venv/bin/python"
+ls -l "$HOME/.hermes/hermes-agent/.venv/bin/python"
 ls -l "$HOME/.hermes/hermes-agent/venv/bin/python"
 ```
 

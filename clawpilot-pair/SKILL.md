@@ -57,16 +57,35 @@ For `openclaw`:
 For `hermes`:
 - Verify the `hermes` CLI exists.
 - Verify `hermes gateway status` works.
-- Verify the Hermes Agent Bridge runtime before pairing. Three green connection indicators are not sufficient unless the Python bridge used for real chat turns is also available.
+- Verify the Hermes Agent Bridge runtime before pairing. Three green connection indicators are not sufficient unless the Python bridge used for real chat turns is also available and import-compatible.
 - Resolve and record Hermes's local location before pairing:
   - `which hermes`
   - the active `HERMES_HOME` or `~/.hermes` / active profile directory
   - the active `.env` path
-  - the Hermes Agent Python path. Check configured Hermes paths first when present, then:
+  - the Hermes Agent Python path. Check and validate candidates in this order:
+    - existing `~/.clawai/runtimes/hermes.json` field `hermesAgentPythonPath`
+    - configured Hermes config/profile keys such as `agent_python`, `agent_python_path`, `bridge_python_path`, `hermes_agent_python_path`, `runtime_python_path`, `venv_python`, or `python_path`
     - `$(dirname $(which hermes))/python`
+    - `~/.local/hermes-agent/.venv/bin/python`
     - `~/.local/hermes-agent/venv/bin/python`
+    - `~/.hermes/hermes-agent/.venv/bin/python`
     - `~/.hermes/hermes-agent/venv/bin/python`
+    - bounded scan under the active Hermes project/home directories for virtualenvs containing `pyvenv.cfg` or `bin/activate`
   - the local API URL, normally `http://127.0.0.1:8642`
+- Validate the chosen Hermes Agent Python path before treating Hermes pairing as ready:
+
+```bash
+test -x /path/to/python
+/path/to/python -c 'import hermes_cli, hermes_state, run_agent, yaml'
+```
+
+- After `clawpilot pair --runtime hermes`, verify ClawPilot persisted the validated path:
+
+```bash
+node -e 'console.log(JSON.parse(require("fs").readFileSync(process.env.HOME + "/.clawai/runtimes/hermes.json", "utf8")).hermesAgentPythonPath || "")'
+```
+
+- If `hermesAgentPythonPath` is empty after pairing, rerun `clawpilot pair --runtime hermes` with the latest ClawPilot release that includes Hermes Agent Python discovery, or repair Hermes until the smoke test above passes.
 - If the gateway service is not installed, tell the user to run:
 
 ```bash
